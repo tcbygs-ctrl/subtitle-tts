@@ -79,15 +79,17 @@ function watchElement(el) {
 }
 
 // ─── Run ───
-const voices = await new Promise(r => {
-  const v = synth.getVoices();
-  if (v.length) r(v);
-  else { synth.addEventListener('voiceschanged', () => r(synth.getVoices()), {once:true}); }
-});
-voice = voices.find(v => v.lang.startsWith('th') || v.name.toLowerCase().includes('thai')) || voices[0];
+(async () => {
+  const voices = await new Promise(r => {
+    const v = synth.getVoices();
+    if (v.length) r(v);
+    else { synth.addEventListener('voiceschanged', () => r(synth.getVoices()), {once:true}); }
+  });
+  voice = voices.find(v => v.lang.startsWith('th') || v.name.toLowerCase().includes('thai')) || voices[0];
 
-const method = findSubtitle();
-completion(method ? 'Subtitle TTS เริ่มทำงาน: ' + method : 'ไม่พบ Subtitle — เปิด Subtitle ในเว็บก่อน');`;
+  const method = findSubtitle();
+  completion(method ? 'Subtitle TTS เริ่มทำงาน: ' + method : 'ไม่พบ Subtitle — เปิด Subtitle ในเว็บก่อน');
+})();`;
 
   // ─────────────────────────────────────────
   // PWA Install Detection

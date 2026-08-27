@@ -1,12 +1,10 @@
 // sw.js — Service Worker for Subtitle TTS PWA
-const CACHE_NAME = 'subtitle-tts-v1';
+const CACHE_NAME = 'subtitle-tts-v2';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/pwa-app.js',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
+  './',
+  './index.html',
+  './pwa-app.js',
+  './manifest.json',
 ];
 
 self.addEventListener('install', e => {
@@ -25,9 +23,16 @@ self.addEventListener('activate', e => {
   );
 });
 
+// Network-first: always try the network so updates land immediately;
+// fall back to cache only when offline.
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request)
-      .then(cached => cached || fetch(e.request))
+    fetch(e.request)
+      .then(res => {
+        const resClone = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, resClone));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });

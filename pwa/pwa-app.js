@@ -5,6 +5,20 @@
   'use strict';
 
   // ─────────────────────────────────────────
+  // Version badge — shows deploy version + timestamp
+  // ─────────────────────────────────────────
+  fetch('./version.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(v => {
+      const el = document.getElementById('app-version');
+      if (el) el.textContent = 'v' + v.version + ' • อัปเดต ' + v.updated;
+    })
+    .catch(() => {
+      const el = document.getElementById('app-version');
+      if (el) el.textContent = '';
+    });
+
+  // ─────────────────────────────────────────
   // State
   // ─────────────────────────────────────────
   let isActive       = false;
